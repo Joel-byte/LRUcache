@@ -8,6 +8,7 @@ public class StringComparatorTest {
 
     @Test
      public void verifyThatNumOneIsGreaterThanNumTwo() {
+        // this is added here in case one want to compile the StringComparator itself
         if(getNumberTwo() == null || getNumberOne() == null) {
             numberOne = "1.2";
             numberTwo = "1.1";
