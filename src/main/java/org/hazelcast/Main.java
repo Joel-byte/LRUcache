@@ -12,6 +12,7 @@ public class Main {
 
 		Scanner scan, scanOne;
 		String quit = "";
+		// creating the instance of the geoDistributedLRUCache which will allows us to call the operation on the cache
 		GeoDistributedLRUCache<String, String> cache = new GeoDistributedLRUCache<>(0, "cache");
 		// Get the cluster object
 		Cluster cluster = GeoDistributedLRUCache.getHazelcastInstance().getCluster();

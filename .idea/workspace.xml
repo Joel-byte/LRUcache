@@ -9,7 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b5863376-585f-4b46-9c2e-160db1e2ae5f" name="Changes" comment="adding some comment in the printCache() method in the GeoDistributedLRUCache class" />
+    <list default="true" id="b5863376-585f-4b46-9c2e-160db1e2ae5f" name="Changes" comment="workspace.xml">
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hazelcast/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hazelcast/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -118,7 +120,7 @@
       <option name="presentableId" value="Default" />
       <updated>1716172195063</updated>
       <workItem from="1716172197514" duration="512000" />
-      <workItem from="1716172784914" duration="8314000" />
+      <workItem from="1716172784914" duration="8722000" />
     </task>
     <task id="LOCAL-00001" summary="hazelcast_jar&#10;with project itself">
       <created>1716177128605</created>
@@ -134,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716181323748</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="workspace.xml">
+      <created>1716181703465</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1716181703465</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -143,6 +152,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="hazelcast_jar&#10;with project itself" />
     <MESSAGE value="adding some comment in the printCache() method in the GeoDistributedLRUCache class" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding some comment in the printCache() method in the GeoDistributedLRUCache class" />
+    <MESSAGE value="workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="workspace.xml" />
   </component>
 </project>
