@@ -14,14 +14,14 @@ public class GeoDistributedLRUCache<K extends Comparable<K>, V> {
 	
 	private static HazelcastInstance hazelcastInstance;
 
-	private final IMap<K, CacheItem<V>> cache;
+	private final IMap<K, CacheItem<V>> map;
 
 	private final FixedSizeLinkedHashMap<K, CacheItem<V>> fixedSizeLinkedHashMap;
 	private int capacity;
 	private int size  = 0;
-	GeoDistributedLRUCache(int capacity, String map) {
+	GeoDistributedLRUCache(int capacity, String mapName) {
 		hazelcastInstance = Hazelcast.newHazelcastInstance(new Config());
-		cache = hazelcastInstance.getMap(map);
+		map = hazelcastInstance.getMap(mapName);
 		this.setCapacity(capacity);
 		fixedSizeLinkedHashMap = new FixedSizeLinkedHashMap<>(this.getCapacity());
 		size++;
@@ -56,14 +56,14 @@ public class GeoDistributedLRUCache<K extends Comparable<K>, V> {
 
 		CacheItem<V> item = new CacheItem<>(value, ttl);
 		fixedSizeLinkedHashMap.put(key,item);
-		syncFixedLinkedHashMapToImap(cache);
+		syncFixedLinkedHashMapToImap(map);
 
 	}
 
 	public void putItem(K key, CacheItem<V> item) {
 
 		fixedSizeLinkedHashMap.put(key,item);
-		syncFixedLinkedHashMapToImap(cache);
+		syncFixedLinkedHashMapToImap(map);
 
 	}
 	
@@ -75,11 +75,11 @@ public class GeoDistributedLRUCache<K extends Comparable<K>, V> {
 		// then we add it back for it to be added at the front of the hashmap
 		fixedSizeLinkedHashMap.put(key, item);
 		// and finally we put all the values in the hashmap into the cache
-		syncFixedLinkedHashMapToImap(cache);
+		syncFixedLinkedHashMapToImap(map);
 		// if cache is empty we call this to set again its size to one to reverse the fixedSizeLinkedHashMap
 		setSize(1);
 		// and return the value of the front of the cache, which is the new item added
-		return cache.get(key).getValue();
+		return map.get(key).getValue();
 	}
 
 	private void syncFixedLinkedHashMapToImap(IMap<K,CacheItem<V>> map){
@@ -123,16 +123,18 @@ public class GeoDistributedLRUCache<K extends Comparable<K>, V> {
 		save = reverseLinkedHashMap(fixedSizeLinkedHashMap);
 
 
+		// this is to set the fixedLinkedHashMap with the values of the cache
+		// because when we run an instance of the hazelcast we lose all his values
 		if(fixedSizeLinkedHashMap.getMaxSize() == 0) {
 
-			fixedSizeLinkedHashMap.setMaxSize(cache.size());
-			List<K> entryList = new ArrayList<>(cache.keySet());
+			fixedSizeLinkedHashMap.setMaxSize(map.size());
+			List<K> entryList = new ArrayList<>(map.keySet());
 			Collections.sort(entryList);
 			Collections.reverse(entryList);
 
 			for (K k : entryList) {
 				this.putItem(k, fixedSizeLinkedHashMap.get(k));
-				fixedSizeLinkedHashMap.put(k, cache.get(k));
+				fixedSizeLinkedHashMap.put(k, map.get(k));
 			}
 			save = getFixedSizeLinkedHashMap();
 		}
@@ -151,13 +153,13 @@ public class GeoDistributedLRUCache<K extends Comparable<K>, V> {
 
 	private void evictExpiredItems() {
 		// delete all the item the ttl is reached
-		for (Map.Entry<K, CacheItem<V>> entry : cache.entrySet()) {
+		for (Map.Entry<K, CacheItem<V>> entry : map.entrySet()) {
 			if (entry.getValue().isExpired()) {
 				System.out.println("item with key "+entry.getKey()+" is Expired");
 				fixedSizeLinkedHashMap.remove(entry.getKey());
-				cache.evict(entry.getKey());
+				map.evict(entry.getKey());
 			}
-			if (cache.size() == 0){
+			if (map.size() == 0){
 				System.out.println("cache is empty");
 				// if cache is empty we call this to set again its size to one to reverse the fixedSizeLinkedHashMap
 				setSize(1);
