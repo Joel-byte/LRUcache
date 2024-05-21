@@ -25,7 +25,7 @@ public class Main {
 					var end = Integer.parseInt(splitOne[1]);
 
 					while ( start > end) {
-						System.out.println("x must be inferior to y");
+						System.out.println("startLine must be inferior to endLine");
 						choiceOne = scanner.nextLine();
 						splitOne = choiceOne.split(" ");
 						start = Integer.parseInt(splitOne[0]);
@@ -41,7 +41,7 @@ public class Main {
 					end = Integer.parseInt(splitOne[1]);
 
 					while (start > end){
-						System.out.println("x must be inferior to y");
+						System.out.println("startLine must be inferior to endLine");
 						choiceOneS = scanner.nextLine();
 						splitOne = choiceOneS.split(" ");
 						start = Integer.parseInt(splitOne[0]);
@@ -60,6 +60,7 @@ public class Main {
 					}catch (Exception e){
 						System.out.println("Set Lines first");
 					}
+
 				}
 				case "3" ->{
 					quit = false;
