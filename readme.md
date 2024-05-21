@@ -10,18 +10,18 @@ Overlap Program
 
 * Menu
 
-   ![Main Menu](captures/img.png "Main Menu")
+   ![Main Menu](images/img.png "Main Menu")
 
 1. Option 1
 
-    ![Menu Option 1](captures/img_1.png "Main Menu")
+    ![Menu Option 1](images/img_1.png "Main Menu")
 
 2. Option 2
 
-    ![Menu Option 1](captures/img_2.png "Main Menu")
+    ![Menu Option 1](images/img_2.png "Main Menu")
 
 ###### Example of two Lines that don't overlap
 
 1. Option 1, Option 2
 
-    ![Menu Option 1](captures/img_3.png "Main Menu")
+    ![Menu Option 1](images/img_3.png "Main Menu")
