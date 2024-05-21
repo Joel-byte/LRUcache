@@ -10,7 +10,7 @@ Overlap Program
 
 * Menu
 
-![Main Menu](captures/img.png "Main Menu")
+   ![Main Menu](captures/img.png "Main Menu")
 
 1. Option 1
 
