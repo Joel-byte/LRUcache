@@ -13,7 +13,7 @@ public class Main {
 		Scanner scan, scanOne;
 		String quit = "";
 		// creating the instance of the geoDistributedLRUCache which will allows us to call the operation on the cache
-		GeoDistributedLRUCache<String, String> cache = new GeoDistributedLRUCache<>(0, "cache");
+		GeoDistributedLRUCache<String, String> cache = new GeoDistributedLRUCache<>("cache");
 		// Get the cluster object
 		Cluster cluster = GeoDistributedLRUCache.getHazelcastInstance().getCluster();
 		// Get the set of members and size
@@ -34,12 +34,26 @@ public class Main {
 					if (clusterSize <= 1) {
 
 						System.out.println("\t1-)Enter cache size (e.g: 3)");
-						scanOne = new Scanner(System.in);
-						choiceOne = scanOne.nextLine();
-						cache.setCapacity(Integer.parseInt(choiceOne));
-						cache.getFixedSizeLinkedHashMap().setMaxSize(Integer.parseInt(choiceOne));
-					}
 
+						try{
+							scanOne = new Scanner(System.in);
+							var choiceTwo = scanOne.nextLine();
+
+							while(Character.isLetter(choiceTwo.charAt(0))){
+								System.out.println("try again");
+								scanOne = new Scanner(System.in);
+								choiceTwo = scanOne.nextLine();
+
+								if(!Character.isLetter(choiceTwo.charAt(0))){
+									break;
+								}
+							}
+							GeoDistributedLRUCache.setSize(Integer.parseInt(choiceTwo));
+						}catch (Exception ignored){
+
+						}
+
+					}
 					do {
 						System.out.println("1-)put\n2-)get\n3-)show cache\n4-)quit");
 						scanOne = new Scanner(System.in);
@@ -50,13 +64,19 @@ public class Main {
 							case "1" -> {
 
 								//cache.setCache(GeoDistributedLRUCache.getHazelcastInstance().getMap("cache"));
-								System.out.println("Option 2");
+								System.out.println("Option 1");
 								System.out.println("\t1-)Enter key - Enter value - Enter expirationTime (e.g: 1 one 5)");
 								scanOne = new Scanner(System.in);
 								choiceOne = scanOne.nextLine();
 								String[] split = choiceOne.split(" ");
 
-								cache.put(split[0], split[1], System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(Integer.parseInt(split[2])));
+								try{
+									cache.put(split[0], split[1], System.currentTimeMillis() +
+											TimeUnit.SECONDS.toMillis(Integer.parseInt(split[2])));
+								}catch (Exception e){
+									//System.out.println("enter the values correctly (2 one 30)");
+									e.printStackTrace();
+								}
 								// to change the size of fixedSizeLinkedHashMap when the user
 								// add only item and move to the other instance
 							}
@@ -76,8 +96,7 @@ public class Main {
 									System.out.println(choiceOne + " -> " + value);
 									System.out.println();
 									System.out.println("\tPrinting cache...");
-									System.out.println(cache.printCache());
-
+									cache.printCache();
 
 								} catch (Exception e) {
 									System.out.println("key does not exist");
@@ -87,7 +106,7 @@ public class Main {
 							case "3" -> {
 								System.out.println("Option 3");
 								System.out.println("\tPrinting cache...");
-								System.out.println(cache.printCache());
+								cache.printCache();
 							}
 							case "4" -> {
 								quit = "quit";

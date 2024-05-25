@@ -1,172 +1,324 @@
 package org.hazelcast;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GeoDistributedLRUCache<K extends Comparable<K>, V> {
-	
+
 	private static HazelcastInstance hazelcastInstance;
-
-	private final IMap<K, CacheItem<V>> map;
-
-	private final FixedSizeLinkedHashMap<K, CacheItem<V>> fixedSizeLinkedHashMap;
-	private int capacity;
-	private int size  = 0;
-	GeoDistributedLRUCache(int capacity, String mapName) {
+	private final IMap<K, CacheItem<K,V>> map;
+	private static int size  = 0;
+	private CacheItem<K,V> head;
+	private CacheItem<K,V> tail;
+	LRUCacheListener<K, V> listener;
+	GeoDistributedLRUCache(String mapName) {
 		hazelcastInstance = Hazelcast.newHazelcastInstance(new Config());
 		map = hazelcastInstance.getMap(mapName);
-		this.setCapacity(capacity);
-		fixedSizeLinkedHashMap = new FixedSizeLinkedHashMap<>(this.getCapacity());
-		size++;
+		listener = new LRUCacheListener<>();
+		map.addEntryListener(listener, true);
 	}
 
 	public static HazelcastInstance getHazelcastInstance() {
 		return hazelcastInstance;
 	}
 
-	public FixedSizeLinkedHashMap<K, CacheItem<V>> getFixedSizeLinkedHashMap() {
-		return fixedSizeLinkedHashMap;
+	public static void setSize(int newSize) {
+		size = newSize;
 	}
+	public static int getSize() { return size; }
+	public void put(K key, V value, Long expirationTime) {
 
-
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	public int getCapacity() {
-		return capacity;
-	}
-
-	public void setCapacity(int newCapacity){
-		capacity = newCapacity;
-	}
-
-	public void put(K key, V value, Long ttl) {
-
-		CacheItem<V> item = new CacheItem<>(value, ttl);
-		fixedSizeLinkedHashMap.put(key,item);
-		syncFixedLinkedHashMapToImap(map);
-
-	}
-
-	public void putItem(K key, CacheItem<V> item) {
-
-		fixedSizeLinkedHashMap.put(key,item);
-		syncFixedLinkedHashMapToImap(map);
-
-	}
-	
-	public V get(K key) {
-		// we query the item we want to get from the hashmap  and stock it in item var
-		var item = fixedSizeLinkedHashMap.get(key);
-		// then we remove from the hashmap
-		fixedSizeLinkedHashMap.remove(key);
-		// then we add it back for it to be added at the front of the hashmap
-		fixedSizeLinkedHashMap.put(key, item);
-		// and finally we put all the values in the hashmap into the cache
-		syncFixedLinkedHashMapToImap(map);
-		// if cache is empty we call this to set again its size to one to reverse the fixedSizeLinkedHashMap
-		setSize(1);
-		// and return the value of the front of the cache, which is the new item added
-		return map.get(key).getValue();
-	}
-
-	private void syncFixedLinkedHashMapToImap(IMap<K,CacheItem<V>> map){
-		// Sync LinkedHashMap with distributed IMap
-		try {
-			// know that these values won't be added in order
-			// because it's the internal behavior
-			map.putAll(fixedSizeLinkedHashMap);
-
-		}catch (Exception ignored){
-
-		}
-	}
-
-	private FixedSizeLinkedHashMap<K, CacheItem<V>> reverseLinkedHashMap(FixedSizeLinkedHashMap<K, CacheItem<V>> fixedSizeLinkedHashMap) {
-		// Get entries from the original map
-		List<Map.Entry<K, CacheItem<V>>> entryList = new ArrayList<>(fixedSizeLinkedHashMap.entrySet());
-		// Reverse the list
-		if (getSize() == 1) {
-			Collections.reverse(entryList);
-			setSize(2);
-		}
-		fixedSizeLinkedHashMap.clear();
-		// Put the reversed entries into the new map
-		for (Map.Entry<K, CacheItem<V>> entry : entryList) {
-			//cache.put(entry.getKey(), entry.getValue());
-			fixedSizeLinkedHashMap.put(entry.getKey(), entry.getValue());
-		}
-
-		return fixedSizeLinkedHashMap;
-
-
-	}
-	
-	public String printCache() {
-
-
-		// Retrieve entries and print in insertion order
-		StringBuilder str = new StringBuilder();
-		var save = new FixedSizeLinkedHashMap<K, CacheItem<V>>(getCapacity());
-		save = reverseLinkedHashMap(fixedSizeLinkedHashMap);
-
-
-		// this is to set the fixedLinkedHashMap with the values of the cache
-		// because when we run an instance of the hazelcast we lose all his values
-		if(fixedSizeLinkedHashMap.getMaxSize() == 0) {
-
-			fixedSizeLinkedHashMap.setMaxSize(map.size());
-			List<K> entryList = new ArrayList<>(map.keySet());
-			Collections.sort(entryList);
-			Collections.reverse(entryList);
-
-			for (K k : entryList) {
-				this.putItem(k, fixedSizeLinkedHashMap.get(k));
-				fixedSizeLinkedHashMap.put(k, map.get(k));
+		CacheItem<K,V> item = new CacheItem<>(key, value, expirationTime);
+		// if capacity is reached or key already exist
+		// the reason why I put the -1 is, because the size of the map is updated
+		// only after leaving this put method
+		if (map.size() == getSize()) {
+			if(map.containsKey(key)) {
+				// we move the item to the front of the linkedList
+				moveItemToTheFrontOfTheLinkedList(item);
+			}else {
+				// we remove the last item from the linkedList and (get it back, used to)
+				removeTheLastItemAddedToTheLinkedList();
+				// we then add the new item to the front of the linkedList
+				addItemToTheFrontOfTheLinkedList(item);
 			}
-			save = getFixedSizeLinkedHashMap();
+			map.remove(key);
+			map.put(key,  item);
+		}
+		// if not and key already exist
+		else {
+			// add only to the linkedList if only cache doesn't contain key
+			if(!map.containsKey(key))
+				addItemToTheFrontOfTheLinkedList(item);
+			// add it also to the cache
+			map.put(key, item);
+
 		}
 
-		//  evict Expired items before printing them
-		evictExpiredItems();
+		System.out.println("Item added successfully...\n");
+	}
 
-		for (Map.Entry<K, CacheItem<V>> item : save.entrySet()) {
 
-			str.append(item.getKey()).append(" -> ").append(item.getValue());
-			str.append("\n");
+	public V get(K key) {
+
+		// we query the item at the specified index with the key
+		CacheItem<K,V> item = map.get(key);
+
+		// we check if the item is not null
+		if (item != null) {
+			// but is expired
+			if (item.isExpired()) {
+				// we then remove it from the map and the doubleLinkedList
+				removeAnItemFromTheLinkedListWithKey(key);
+				map.remove(key);
+				return null;
+			}
+			// and not expired
+			// we add it to the front
+			else {
+
+				listener.setEvent(new EntryEvent<>("LRUCacheListener", hazelcastInstance.getCluster().getLocalMember(),
+						4,item.getKey(),item.getValue()));
+				// we remove it and add it back to the front
+				//removeAnItemFromTheLinkedListWithKey(key);
+				if(head != null){
+					moveItemToTheFrontOfTheLinkedList(item);
+				}
+				else{
+					putLinkedListToUpdateAfterAGetWithAnewInstance();
+				}
+				//remove the item
+				// and add it back to be at the front
+				map.remove(key);
+				map.put(item.getKey(),  item);
+				return item.getValue();
+
+			}
+		}
+		return null;
+
+
+	}
+
+
+	private void removeAnItemFromTheLinkedListWithKey(K key) {
+
+		// looping through the double linkedList
+		while (head != null) {
+			if(key.equals(head.getKey())) {
+				// if it's the last item in the doubleLinkedList
+				if(head.getNext() == null) {
+
+					head = null;
+					return;
+				}
+				// if it's the first item in the doubleLinkedList
+				else if (head.getPrev() == null) {
+
+					head = null;
+					//tempHeadCacheItemTemp =  tempHead = null;
+					return;
+				}
+				// if item in the middle
+				else {
+
+					head.getNext().setPrev(head.getPrev());
+					head.getPrev().setNext(head.getNext());
+					return;
+				}
+			}
+			head = head.getNext();
+
 		}
 
-		 return str.toString();
+	}
+	// removes the last item in the linkedList and return the deleted item
+	private void removeTheLastItemAddedToTheLinkedList() {
+
+		if (head == null || head.getNext() == null){
+			head = null;
+			return;
+		}
+
+		// looping through the double linkedList
+		while (head != null) {
+			// check if we reached the last item
+			if (head.getNext() == null) {
+				head = head.getPrev();
+				head.setNext(null);
+				break;
+			}
+			head = head.getNext();
+		}
+		// if we have more than 2 items (means that head was not actually),
+		// we put it to the actual head
+		while (head != null){
+			if(head.getPrev() == null){
+				break;
+			}
+			head = head.getPrev();
+		}
+
+	}
+
+
+	private void moveItemToTheFrontOfTheLinkedList(CacheItem<K,V> item){
+
+		if(item ==  null){
+			return;
+		}
+
+		var temp = head;
+		var tempS = head;
+
+		while (tempS != null){
+			if(tempS.getNext() == null){
+				tail = tempS;
+				break;
+			}
+			tempS = tempS.getNext();
+		}
+
+		while(temp != null){
+			if (temp.getKey().equals(item.getKey()))
+			{
+				item = temp;
+				break;
+			}
+			temp = temp.getNext();
+
+		}
+		// if item is the first element on the linkedList
+		if(head == item){
+			return;
+		}
+		// if item is at the end of the linkedList
+		if(item == tail){
+			tail = tail.getPrev();
+			tail.setNext(null);
+		}
+		// if item is in the middle of the linkedList
+		if (item.getPrev() != null && item.getNext() != null){
+			item.getPrev().setNext(item.getNext());
+			item.getNext().setPrev(item.getPrev());
+		}
+		item.setPrev(null);
+		item.setNext(head);
+		head.setPrev(item);
+		head = item;
+
+	}
+
+	private void addItemToTheFrontOfTheLinkedList(CacheItem<K,V> item) {
+		// this means that there's already an item in the doubleLinkedList
+		if (head != null) {
+			// we set the next item of the newItem to head, note that here head is never null
+			item.setNext(head);
+			// then we set the previous item to the head to new item
+			head.setPrev(item);
+			// and we point the head to the item for it to become head again
+		}
+
+		// when it's the first item we are adding to the list
+		// we just point it to the new item
+		head = item;
 	}
 
 	private void evictExpiredItems() {
-		// delete all the item the ttl is reached
-		for (Map.Entry<K, CacheItem<V>> entry : map.entrySet()) {
+		// delete all the item when the ttl is reached
+		for (Map.Entry<K, CacheItem<K, V>> entry : map.entrySet()) {
 			if (entry.getValue().isExpired()) {
 				System.out.println("item with key "+entry.getKey()+" is Expired");
-				fixedSizeLinkedHashMap.remove(entry.getKey());
+				removeAnItemFromTheLinkedListWithKey(entry.getKey());
 				map.evict(entry.getKey());
 			}
-			if (map.size() == 0){
-				System.out.println("cache is empty");
-				// if cache is empty we call this to set again its size to one to reverse the fixedSizeLinkedHashMap
-				setSize(1);
+		}
+		if (map.size() == 0){
+			System.out.println("cache is empty");
+			// the reason why we did this is, because the second instance linkedList stayed in memory
+			// without deletion
+			while (head != null){
+				head = head.getNext();
+				if(head == null)
+					break;
+				head.setPrev(null);
 			}
 		}
-
-
 	}
 
+	public void putLinkedListToUpdateAfterAnewInstance(){
+
+		List<K> rankList = new ArrayList<>(map.keySet());
+		Collections.sort(rankList);
+		// we need to do this not to have duplicated values in the linkedList
+		// when we run a new instance of the hazelcast
+		// delete all the linkedList
+		while (head != null){
+			head = head.getNext();
+			if(head == null)
+				break;
+			head.setPrev(null);
+		}
+		// setting the size in oder to add values to the linkedList
+		// because in the put method we are using the size to check whether we reached the map size before putting value,
+		// Size is considered as the doubleLinkedList size
+		setSize(map.size());
+		for (K k : rankList) {
+			var item = map.get(k);
+			// know that since the keys of the first map are identical to the second map when we run the program
+			// they won't be added to map again
+			addItemToTheFrontOfTheLinkedList(item);
+		}
+	}
+
+	public void putLinkedListToUpdateAfterAGetWithAnewInstance() {
+		var type = listener.getEvent().getEventType().getType();
+		// so for the program not to hit all the time this condition whenever we make a get call
+		// we need to verify that the member size is greater than one
+		if (getHazelcastInstance().getCluster().getMembers().size() > 1) {
+			// means that we first made a get call
+			// 4 means updated
+			if (type == 4) {
+				var item = map.get(listener.getEvent().getKey());
+				moveItemToTheFrontOfTheLinkedList(item);
+
+			} else if (type == 1) {
+				var key = listener.getEvent().getKey();
+				var item = map.get(listener.getEvent().getKey());
+				// we add only to the linkedList if the head key is not equal to itself
+				if(!head.getKey().equals(key)){
+					addItemToTheFrontOfTheLinkedList(item);
+					removeTheLastItemAddedToTheLinkedList();
+				}
+			}
+		}else {
+			if (listener.getEvent().getEventType().getType() == 4) {
+				var item = map.get(listener.getEvent().getKey());
+				moveItemToTheFrontOfTheLinkedList(item);
+			}
+		}
+	}
+	public void printCache() {
+		evictExpiredItems();
+		//means that we run a new instance of the hazelcast
+		//we now have to reorder our new linkedList
+		//since the map was the only element kept in memory
+		if (head == null) {
+			putLinkedListToUpdateAfterAnewInstance();
+		}else{
+			putLinkedListToUpdateAfterAGetWithAnewInstance();
+
+		}
+		// printing linkedList
+			CacheItem<K, V> tempheadCacheItem = head;
+			while (tempheadCacheItem != null) {
+				System.out.println(tempheadCacheItem.getKey() + " value : " + tempheadCacheItem.getValue());
+				tempheadCacheItem = tempheadCacheItem.getNext();
+			}
+			System.out.println();
+	}
 }

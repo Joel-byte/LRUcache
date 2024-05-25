@@ -2,28 +2,41 @@ package org.hazelcast;
 
 import java.io.Serializable;
 
-class CacheItem<V> implements Serializable {
+class CacheItem<K, V> implements Serializable {
 
-    private final V value;
-    private Long timeToLive;
-    
-    public CacheItem(V value, long ttl) {
-        this.value = value;
-        this.setTimeToLive(ttl);
+    private V value;
+
+	private Long timeToLive;
+
+	private CacheItem<K, V> prev;
+	private CacheItem<K, V> next;
+	private K key;
+
+    public CacheItem(K key, V value, long ttl) {
+		this.setKey(key);
+		this.setValue(value);
+		this.setTimeToLive(ttl);
     }
-
 	public V getValue() {
         return value;
     }
+
+	public void setValue(V value) {
+		this.value = value;
+	}
+
+	public K getKey() {
+		return key;
+	}
+
+	public void setKey(K key) {
+		this.key = key;
+	}
 
 	public String toString() {
 
 		// this works on primitives type only
 		return (String) this.value;
-	}
-
-	public Long getTimeToLive() {
-		return timeToLive;
 	}
 
 	public void setTimeToLive(Long timeToLive) {
@@ -34,7 +47,21 @@ class CacheItem<V> implements Serializable {
 		return System.currentTimeMillis() > timeToLive;
 	}
 
+	public CacheItem<K,V> getPrev() {
+		return prev;
+	}
 
+	public void setPrev(CacheItem<K,V> prev) {
+		this.prev = prev;
+	}
+
+	public CacheItem<K,V> getNext() {
+		return next;
+	}
+
+	public void setNext(CacheItem<K,V> next) {
+		this.next = next;
+	}
 
 
 

@@ -9,7 +9,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b5863376-585f-4b46-9c2e-160db1e2ae5f" name="Changes" comment="workspace.xml">
+    <list default="true" id="b5863376-585f-4b46-9c2e-160db1e2ae5f" name="Changes" comment="uploading the LRUCache program">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/android-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/background.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/chrome-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/firefox-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/flash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/flowplayer-3.2.3.swf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/flowplayer.controls-3.2.2.swf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/flowplayer.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/iconvideo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/ie6-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/ie7-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/ie8-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/ie9-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/img.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/img_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/ipad-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/iphone-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/opera-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/preview.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/safari-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/screenpresso-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM_[Changes]/video-js-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_25_2024_7_26_PM__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/img.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/img_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/hazelcast/LRUCacheListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/videoDemo/video.mp4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/hazelcast_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/hazelcast_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/hazelcast_jar/hazelcast.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/hazelcast_jar/hazelcast.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hazelcast/CacheItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hazelcast/CacheItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hazelcast/FixedSizeLinkedHashMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/hazelcast/GeoDistributedLRUCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hazelcast/GeoDistributedLRUCache.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/hazelcast/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/hazelcast/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +76,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="kokou_joel_agbogan_test_3" />
       </map>
     </option>
   </component>
@@ -63,24 +99,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/ormuco/hazelcast/src/main/java/org/hazelcast",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/ormuco/hazelcast/src/main/java/org/hazelcast&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\ormuco\hazelcast\src\main\java\org\hazelcast" />
@@ -120,7 +156,7 @@
       <option name="presentableId" value="Default" />
       <updated>1716172195063</updated>
       <workItem from="1716172197514" duration="512000" />
-      <workItem from="1716172784914" duration="8722000" />
+      <workItem from="1716172784914" duration="10763000" />
     </task>
     <task id="LOCAL-00001" summary="hazelcast_jar&#10;with project itself">
       <created>1716177128605</created>
@@ -143,7 +179,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716181703465</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="adding some comments in the main">
+      <created>1716182124927</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1716182124927</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +196,8 @@
     <MESSAGE value="hazelcast_jar&#10;with project itself" />
     <MESSAGE value="adding some comment in the printCache() method in the GeoDistributedLRUCache class" />
     <MESSAGE value="workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="workspace.xml" />
+    <MESSAGE value="adding some comments in the main" />
+    <MESSAGE value="uploading the LRUCache program" />
+    <option name="LAST_COMMIT_MESSAGE" value="uploading the LRUCache program" />
   </component>
 </project>
